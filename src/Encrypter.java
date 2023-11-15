@@ -1,6 +1,9 @@
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class Encrypter {
@@ -33,8 +36,24 @@ public class Encrypter {
      * @throws Exception if an error occurs while reading or writing the files
      */
     public void encrypt(String inputFilePath, String encryptedFilePath) throws Exception {
-        //TODO: Call the read method, encrypt the file contents, and then write to new file
+    	String content = readFile(inputFilePath);
+        char[] charArray = content.toCharArray();
+
+        StringBuilder encryptedText = new StringBuilder();
+
+        for (char currentChar : charArray) {
+            if (Character.isLetter(currentChar)) {
+                char encryptedChar = encryptChar(currentChar);
+                encryptedText.append(encryptedChar);
+            } else {
+                encryptedText.append(currentChar);
+            }
+        }
+
+        writeFile(encryptedText.toString(), encryptedFilePath);
     }
+
+   
 
     /**
      * Decrypts the content of an encrypted file and writes the result to another file.
@@ -44,7 +63,57 @@ public class Encrypter {
      * @throws Exception if an error occurs while reading or writing the files
      */
     public void decrypt(String messageFilePath, String decryptedFilePath) throws Exception {
-        //TODO: Call the read method, decrypt the file contents, and then write to new file
+    	String content = readFile(messageFilePath);
+        char[] charArray = content.toCharArray();
+
+        StringBuilder decryptedText = new StringBuilder();
+
+        for (char currentChar : charArray) {
+            if (Character.isLetter(currentChar)) {
+                char decryptedChar = decryptChar(currentChar);
+                decryptedText.append(decryptedChar);
+            } else {
+                decryptedText.append(currentChar);
+            }
+        }
+
+        writeFile(decryptedText.toString(), decryptedFilePath);
+    }
+    
+    /**
+     * Encrypts a single character using the Caesar cipher.
+     *
+     * @param inputChar the character to be encrypted
+     * @return the encrypted character
+     */
+    
+    private char encryptChar(char inputChar) {
+    	if (Character.isUpperCase(inputChar)) {
+            return (char) ((inputChar - 'A' + shift) % 26 + 'A');
+        } else if (Character.isLowerCase(inputChar)) {
+            return (char) ((inputChar - 'a' + shift) % 26 + 'a');
+        } else {
+            return inputChar;
+        }
+    
+    }
+    
+    /**
+     * Decrypts a single character using the Caesar cipher.
+     *
+     * @param inputChar the character to be decrypted
+     * @return the decrypted character
+     */
+    
+    private char decryptChar(char inputChar) {
+    	if (Character.isUpperCase(inputChar)) {
+            return (char) ((inputChar - 'A' - shift + 26) % 26 + 'A');
+        } else if (Character.isLowerCase(inputChar)) {
+            return (char) ((inputChar - 'a' - shift + 26) % 26 + 'a');
+        } else {
+            return inputChar;
+        }
+    
     }
 
     /**
@@ -56,8 +125,21 @@ public class Encrypter {
      */
     private static String readFile(String filePath) throws Exception {
         String message = "";
-        //TODO: Read file from filePath
+        try (Scanner fileScanner = new Scanner(Paths.get("encrypted.txt"))){
+        	while(fileScanner.hasNextLine()) {
+        		String line = fileScanner.nextLine();
+        		
+        try (Scanner fileScanner1 = new Scanner(Paths.get("encryptMe.txt"))){
+             while(fileScanner1.hasNextLine()) {
+            	 String line1 = fileScanner1.nextLine();   
+        	}
+        	fileScanner1.close(); 
+        }catch (Exception e) {
+        	System.out.println("Error: " + e.toString());
+        }
         return message;
+        	}}
+		return message;
     }
 
     /**
@@ -65,9 +147,21 @@ public class Encrypter {
      *
      * @param data     the data to be written to the file
      * @param filePath the path to the file where the data will be written
+     * @throws FileNotFoundException 
      */
-    private static void writeFile(String data, String filePath) {
-        //TODO: Write to filePath
+    private static void writeFile(String data, String filePath) throws FileNotFoundException {
+    	try (PrintWriter output = new PrintWriter("decrypted.txt")){
+    		output.println();
+    		output.close(); 
+    		
+    		try (PrintWriter output1 = new PrintWriter("newEncrypted.txt")){
+        		output1.println();
+        		output1.close(); 
+    	
+    		} catch (Exception e) {
+    		System.out.println("Error: "+ e.toString());	
+    		}
+    	}
     }
 
     /**
